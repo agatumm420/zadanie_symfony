@@ -6,16 +6,16 @@ kernel:
     type: annotation
 api_login_check:
     path: /api/login_check
-    methods: POST
-    defaults: { _controller: App\Controller\LoginController }
+#    methods: POST
+#    defaults: { _controller: App\Controller\LoginController }
 api_refresh_token:
     path: /api/token/refresh
-    methods: POST
-    defaults: { _controller: App\Controller\TokenController }
+#    methods: POST
+#    defaults: { _controller: App\Controller\TokenController }
 api_token_invalidate:
     path: /api/token/invalidate
-    methods: POST
-    defaults: { _controller: App\Controller\InactivateController }
+#    methods: POST
+#    defaults: { _controller: App\Controller\InactivateController }
 app.swagger_ui:
     path: /doc
     methods: GET

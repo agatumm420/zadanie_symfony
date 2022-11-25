@@ -48,7 +48,7 @@ final class TokenController
      * )
 
      * @OA\RequestBody(@Model(type=RereshBody::class))
-     * @OA\Tag(name="registration")
+     * @OA\Tag(name="auth")
      *
      */
     public function __invoke(Request $request, $area = 'Token')

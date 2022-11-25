@@ -13,21 +13,23 @@ namespace App\Controller;
 use Nelmio\ApiDocBundle\Annotation\Model as Model;
 use Nelmio\ApiDocBundle\Exception\RenderInvalidArgumentException;
 use Nelmio\ApiDocBundle\Render\Html\AssetsMode;
-use Nelmio\ApiDocBundle\Render\RenderOpenApi;
+use Nelmio\ApiDocBundle\Render\RenderOpenApi as RenderOpenApi;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\UserDto;
 
 use App\ResponseRegistration;
 use App\LoginResponse;
+//#[AsController]
 final class LoginController
 {
     /**
      * @var RenderOpenApi
      */
-    private $renderOpenApi;
+    public $renderOpenApi;
 
     public function __construct(RenderOpenApi $renderOpenApi)
     {
@@ -49,7 +51,7 @@ final class LoginController
      * )
 
      * @OA\RequestBody(@Model(type=UserDto::class))
-     * @OA\Tag(name="registration")
+     * @OA\Tag(name="auth")
      *
      */
     public function __invoke(Request $request, $area = 'Token')
