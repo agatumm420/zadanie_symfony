@@ -11,7 +11,7 @@ class UserControllerTest extends WebTestCase
 //        $client = static::createClient();
 //        $crawler = $client->request('POST', '/api/register',[
 //
-//                'email'=>'agnieszkatumm@gmail.com',
+//                'email'=>'bunia@gmail.com',
 //                'password'=>'GuGu2325'
 //
 //        ]);
@@ -22,9 +22,9 @@ class UserControllerTest extends WebTestCase
     public function test_login():void
     {
         $client = static::createClient();
-        $crawler = $client->request('POST', '/api/login_check',[
+        $crawler = $client->request('POST', '/api/get_jwt',[
 
-            'email'=>'agnieszkatumm@gmail.com',
+            'email'=>'bunia@gmail.com',
             'password'=>'GuGu2325'
 
         ]);

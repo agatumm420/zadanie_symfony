@@ -1,5 +1,5 @@
 security:
-    enable_authenticator_manager: true
+#    enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
@@ -12,14 +12,23 @@ security:
                 property: email
 
     firewalls:
-
+        login:
+            pattern: /api/login
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                username_path: email
+                #                password_path: password
+                check_path: /api/login_check # or api_login_check as defined in config/routes.yaml
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
             pattern: /api
             stateless: true
             #            entry_point: security.authenticator.form_login.main
             entry_point: jwt
-            #            entry_point: App\Security\CustomAuthenticator
-            provider: app_user_provider
+#            #            entry_point: App\Security\CustomAuthenticator
+#            provider: app_user_provider
 
             #            custom_authenticator: App\Security\CustomAuthenticator
 
@@ -28,33 +37,36 @@ security:
             refresh_jwt:
                 check_path: /api/token/refresh
             logout:
-                path: api_token_invalidate
-        main:
-
-            lazy: true
-            provider: app_user_provider
-
-            custom_authenticator: App\Security\CustomAuthenticator
-            logout:
-                path: app_logout
-        login:
-            pattern: /api/login
-            stateless: true
-            provider: app_user_provider
-            json_login:
-                #                username_path: email
-                #                password_path: password
-                check_path: /api/login_check # or api_login_check as defined in config/routes.yaml
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-
-
+                   path: api_token_invalidate
+#        dev:
+#            pattern: ^/(_(profiler|wdt)|css|images|js)/
+#            security:
+#                false
+#        api:
+#            pattern: ^/api/
+#            stateless: true
+#            provider: app_user_provider
+#            jwt: ~
+#        main:
+#
+#            stateless: true
+#            provider: app_user_provider
+#            json_login:
+#                check_path: /authentication_token
+#                username_path: email
+#                password_path: password
+#                success_handler: lexik_jwt_authentication.handler.authentication_success
+#                failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
 
-        dev:
-            pattern: /(_(profiler|wdt)|css|images|js)/
-            security: false
+
+                #
+#
+#
+#
+#
+#
+
 
 
                 # where to redirect after logout
@@ -71,10 +83,11 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
 
-         - { path: /api/login, roles: PUBLIC_ACCESS }
-         - { path: /api,       roles: IS_AUTHENTICATED_FULLY }
-         - {path: /api/register, roles: PUBLIC_ACCESS}
-#         - {path: /api/login_check, roles: PUBLIC_ACCESS}
+#         - { path: /api/login, roles: PUBLIC_ACCESS }
+#        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+#        - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
+#        - { path: ^/api, roles: PUBLIC_ACCESS }
+#        - { path: ^/, roles: PUBLIC_ACCESS  }
 #         - { path: /api/token/refresh, roles: PUBLIC_ACCESS }
 
 when@test:

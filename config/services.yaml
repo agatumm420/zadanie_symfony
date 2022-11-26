@@ -7,9 +7,14 @@ parameters:
 
 services:
     # default configuration for services in *this* file
+    app.custom_authenticator:
+        class: App\Security\TokenAuthenticator
+        parent: lexik_jwt_authentication.security.jwt_authenticator
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true
+
+        public: false # Automatically registers your services as commands, event subscribers, etc.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -19,6 +24,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+#    App\Foo\Bar:
+#        tags: { * }
 #    App\Controller\:
 #        resource: '../src/Controller/LoginController.php'
 #        tags: [ 'controller.service_arguments' ,'nelmio_api_doc.render_docs']
