@@ -13,7 +13,7 @@ security:
 
     firewalls:
         login:
-            pattern: /api/login
+            pattern: ^/api/login
             stateless: true
             provider: app_user_provider
             json_login:

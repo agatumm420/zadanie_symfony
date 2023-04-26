@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use http\Client\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +24,14 @@ class SecurityController extends AbstractController
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
-
+    /**
+     * @Route("/api/login_check", name="api_login_check", methods={"POST"})
+     */
+    public function loginCheck(Request $request)
+    {
+        // This method should not be called directly, as the login process will be handled by Symfony.
+        throw new \RuntimeException('You must configure the check path to be handled by the firewall using json_login in your security firewall configuration.');
+    }
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void
     {

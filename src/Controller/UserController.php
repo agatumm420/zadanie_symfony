@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\User;
+use App\Exception\ApiException;
 use Nelmio\ApiDocBundle\Annotation\Model as Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,37 +66,46 @@ class UserController extends AbstractController
 
         $email=$request->request->get('email');
         $password=$request->request->get('password');
+        $repeated=$request->request->get('repeated');
+        $name=$request->request->get('name');
+        $surname=$request->request->get('surname');
         //dd($data);
         $user_exists=$doctrine->getRepository(User::class)->findBy(['email'=>$email]); //wróc do tego
 
         //dd($user_exists);
         if($user_exists){
-            return $this->json([
-                'error'=>'User with this email already exists ',
-            ]);
+            throw new ApiException(JsonResponse::HTTP_BAD_REQUEST, 'User with such email already exists');
         }
         else{
-            $factory=$this->get_factory();
-            $ActualPasswordHasher = $factory->getPasswordHasher('common');
-            //$hash = $ActualPasswordHasher->hash($plainPassword);
-            $user=new User();
-            $user->setEmail($email);
-            $user->setPassword(
-                $ActualPasswordHasher->hash($password)
-            );
+            if($password==$repeated && preg_match('/[a-z]/', $password) && preg_match('/[A-Z]/', $password)){
 
-            $em=$doctrine->getManager();
-            $em->persist($user);
-            $em->flush();
+                $factory=$this->get_factory();
+                $ActualPasswordHasher = $factory->getPasswordHasher('common');
+                //$hash = $ActualPasswordHasher->hash($plainPassword);
+                $user=new User();
+                $user->setEmail($email);
+                $user->setPassword(
+                    $ActualPasswordHasher->hash($password)
+                );
+                $user->setName($name);
+                $user->setSurname($surname);
+
+                $em=$doctrine->getManager();
+                $em->persist($user);
+                $em->flush();
 
 
-            return $this->json([
+                return $this->json([
 
-                    'user_id'=> $user->getId(),
-                    'email'=>$user->getEmail(),
+                        'user_id'=> $user->getId(),
+                        'email'=>$user->getEmail(),
 
-                ]
-            );
+                    ]
+                );
+            }
+            else{
+                throw new ApiException(JsonResponse::HTTP_BAD_REQUEST, 'Provided passwords must match and contain one capital letter and one lower caps letter');
+            }
         }
 
     }
@@ -134,6 +144,7 @@ class UserController extends AbstractController
             // dd($ActualPasswordHasher->verify($user[0]->getPassword(),$password ) );
             if ($ActualPasswordHasher->verify($user[0]->getPassword(), $password)) {
                 $refreshToken = $refreshTokenGenerator->createForUserWithTtl($user[0], 3600);
+
                 $refreshTokenManager->save($refreshToken);
 
                 return new JsonResponse(['token' => $JWTManager->create($user[0]), 'refresh_token'=>$refreshToken->getRefreshToken()]);
